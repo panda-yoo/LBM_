@@ -1,6 +1,3 @@
-# Creating a README.md file for the LBM_PROJECT_FILES based on the provided project structure
-
-readme_text = """
 # LBM_PROJECT_FILES
 
 This repository contains implementations of various **Lattice Boltzmann Method (LBM)** simulations in both **Python** and **C++**. The simulations span across 1D, 2D, and multiphysics applications such as diffusion, cavity flow, Poiseuille flow, and vortex shedding.
