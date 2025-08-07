@@ -8,7 +8,7 @@ This repository contains implementations of various **Lattice Boltzmann Method (
 ---
 
 ## 🗂 Project Structure
-
+```
 lbm_D1Q3/
 ├── python/
 │ └── 1d_diffusion/
@@ -62,7 +62,7 @@ misc/
 └── test_code.ipynb
 
 ---
-
+```
 ## 📌 Features
 
 - ✅ **1D Diffusion (D1Q3)** — Python implementation with variable diffusivity
