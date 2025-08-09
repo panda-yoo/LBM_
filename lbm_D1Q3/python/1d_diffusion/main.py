@@ -19,6 +19,8 @@ def sim():
 
     rho = np.zeros(m, dtype=np.float64)
 
+    # initial condition
+    rho[m//2] = 1.0
     # feq_i = w_k * rho_i
     # initializing distributions
     for i in range(m):
@@ -46,7 +48,7 @@ def sim():
         # boundary condition
 
         # its like maintaining constant value at boundary
-        f1[0] = 1.0 - (f0[0] + f2[0])
+        f1[0] = 0.0 - (f0[0] + f2[0])
         # just copying distribution f2[last_node-2] to f2[last_node-1]
         f2[m - 1] = f2[m - 2]
         for i in range(m):
@@ -56,13 +58,13 @@ def sim():
             plt.plot(np.arange(0, m, 1), rho, label=f't -> {t}')
             plt.xlabel(r"$x$")
             plt.ylabel(r"$\rho$")
-
+            plt.ylim(0,0.5)
 
             plt.legend()
 
     # plt.plot(np.arange(0, m, 1), rho)
     # plt.show()
-    plt.savefig('diffusion.png')
+    # plt.savefig('diffusion_rho_i_zero.png')
 
 
 if __name__ == "__main__":
