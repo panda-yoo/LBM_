@@ -28,18 +28,39 @@ def sim_2d_prob():
     # plt.imshow(rho)
     # plt.show()
     for t in tqdm(range(nitr)):
-        for jy in range(ny):
-            for ix in range(nx):
-                rho[jy, ix] = np.sum(f[jy, ix, :])
 
-        cal_feq(feq, rho)
         # collision
-        for jy in range(ny):
-            for ix in range(nx):
+        for jy in range(1, ny - 1):
+            for ix in range(1, nx - 1):
                 f[jy, ix] = f[jy, ix] * (1.0 - OMEGA) + feq[jy, ix] * OMEGA
 
         # streaming
         f_temp = np.zeros_like(f)
+        # f_temp[jy, ix, 1]
+        # getting buffer nodes ready for streaming
+        # left
+        f[:, 0, 1] = f[:, nx - 2, 1]
+        f[:, 0, 5] = f[:, nx - 2, 5]
+        f[:, 0, 8] = f[:, nx - 2, 8]
+
+        # right
+        f[:, nx - 1, 3] = f[:, 1, 3]
+        f[:, nx - 1, 6] = f[:, 1, 6]
+        f[:, nx - 1, 7] = f[:, 1, 7]
+        # down
+        f[0, :, 8] = f[ny - 2, :, 8]
+        f[0, :, 4] = f[ny - 2, :, 4]
+        f[0, :, 7] = f[ny - 2, :, 7]
+        # up
+        f[ny - 1, :, 6] = f[1, :, 6]
+        f[ny - 1, :, 2] = f[1, :, 2]
+        f[ny - 1, :, 5] = f[1, :, 5]
+
+        # corners
+        f[0, 0, 5] = f[ny - 2, nx - 2, 5]
+        f[0, nx - 1, 6] = f[ny - 2, 1, 6]
+        f[ny - 1, 0, 8] = f[1, nx - 2, 8]
+        f[ny - 1, nx - 1, 7] = f[1, 1, 7]
 
         for jy in range(1, ny - 1):
             for ix in range(1, nx - 1):
@@ -53,34 +74,20 @@ def sim_2d_prob():
                 f_temp[jy, ix, 7] = f[jy + 1, ix + 1, 7]  # f7
                 f_temp[jy, ix, 8] = f[jy + 1, ix - 1, 8]  # f8
 
-        #     boundary(periodic)
-
-        # left
-        f_temp[:, 0, 1] = f_temp[:, nx - 1, 1]
-        f_temp[:, 0, 5] = f_temp[:, nx - 1, 5]
-        f_temp[:, 0, 8] = f_temp[:, nx - 1, 8]
-        # right
-        f_temp[:, nx - 1, 3] = f_temp[:, 0, 3]
-        f_temp[:, nx - 1, 6] = f_temp[:, 0, 6]
-        f_temp[:, nx - 1, 7] = f_temp[:, 0, 7]
-
-        # down
-        f_temp[0, :, 5] = f_temp[ny - 1, :, 5]
-        f_temp[0, :, 6] = f_temp[ny - 1, :, 6]
-        f_temp[0, :, 2] = f_temp[ny - 1, :, 2]
-
-        # up
-        f_temp[ny - 1, :, 7] = f_temp[0, :, 7]
-        f_temp[ny - 1, :, 4] = f_temp[0, :, 4]
-        f_temp[ny - 1, :, 8] = f_temp[0, :, 8]
         f[:] = f_temp
+        for jy in range(ny):
+            for ix in range(nx):
+                rho[jy, ix] = np.sum(f[jy, ix, :])
+
+        cal_feq(feq, rho)
 
     fig, ax = plt.subplots()
 
-    ax.plot(np.arange(0, nx, 1), rho[ny // 2, :])
+    # ignoring buffer nodes while plotting
+    ax.plot(np.arange(0, nx - 2, 1), rho[ny // 2, 1:-1])
     fig.savefig('results/1dplot.png')
 
-    ax.imshow(rho)
+    ax.imshow(rho[1:-1, 1:-1])
     fig.savefig('results/2dplot.png')
 
     plt.imshow(rho)
