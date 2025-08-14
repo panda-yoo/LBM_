@@ -7,7 +7,7 @@ nx = 100
 ny = 100
 OMEGA = .4
 
-nitr = 1000
+nitr = 100
 
 
 #  indices -> 0 and nx-1/ny-1 will be treated as buffer nodes
